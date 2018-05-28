@@ -1,8 +1,32 @@
+
+
+// print inputs to console
+process.argv.forEach(function (val, index, array) {
+  console.log(index + ': ' + val);
+});
+
+// get command line args
+const args = process.argv
+if (args.length == 5){
+	
+	var firstName = args[2];
+	var lastName = args[3];
+	var conf = args[4];
+	console.log("Processing...");
+
+} else {
+
+	//quit the application
+	console.log("Invalid Arguments passed to swci2.js");
+	return;
+}
+
 const puppeteer = require('puppeteer');
 const southwestCheckInURL = 'https://www.southwest.com/air/check-in/';
-const conf = "AGC524";
-const firstName = "Benjamin";
-const lastName = "Weil";
+
+// const conf = "AGC524";
+// const firstName = "Benjamin";
+// const lastName = "Weil";
 
 (async () => {
 	const browser = await puppeteer.launch({headless: false});
