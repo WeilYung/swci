@@ -14,7 +14,15 @@ cd $p
 firstName=
 lastName=
 conf=
+email=
 
 fname=$firstName_$lastName_$conf.png
 
-/usr/local/nvm/versions/node/v8.9.4/bin/node $j $firstName $lastName $conf  >& $f
+/usr/bin/node $j $firstName $lastName $conf  >& $f
+
+if [ -f fname ]
+then
+	python $p/aws_email.py -t $email -r Success -a $fname
+else
+	python $p/aws_email.py -t $email -r Fail -a $f
+fi
