@@ -16,7 +16,7 @@ lastName=
 conf=
 email=
 
-fname=$firstName_$lastName_$conf.png
+fname=${firstName}_${lastName}_${conf}.png
 
 if [ -f $fname ]
 then rm $fname
