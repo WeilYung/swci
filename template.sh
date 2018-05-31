@@ -15,9 +15,12 @@ firstName=
 lastName=
 conf=
 email=
-flight=1
 
-fname=$firstName_$lastName_$conf_$flight.png
+fname=$firstName_$lastName_$conf.png
+
+if [ -f $fname ]
+then rm $fname
+fi
 
 /usr/bin/node $j $firstName $lastName $conf  >& $f
 
