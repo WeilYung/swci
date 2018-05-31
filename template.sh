@@ -24,7 +24,7 @@ fi
 
 /usr/bin/node $j $firstName $lastName $conf  >& $f
 
-if [ -f fname ]
+if [ -f $fname ]
 then
 	python $p/aws_email.py -t $email -r Success -a $fname
 else
