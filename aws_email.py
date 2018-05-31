@@ -14,7 +14,7 @@ def main():
     
     parser.add_argument("-t", '--to', required=True, help='recipient of the email')
     parser.add_argument("-r", '--result', required=True, help='result of application')
-    parser.add_argument("-a", '--attach', required=True, help='name of file to attach')
+    parser.add_argument("-a", '--attach', required=False, help='name of file to attach')
     # The full path to the file that will be attached to the email.
     args = parser.parse_args()
 
@@ -34,13 +34,13 @@ def sendEmail(to, result, attachment):
     # Specify a configuration set. If you do not want to use a configuration
     # set, comment the following variable, and the 
     # ConfigurationSetName=CONFIGURATION_SET argument below.
-    CONFIGURATION_SET = "ConfigSet"
+    # CONFIGURATION_SET = "ConfigSet"
 
     # If necessary, replace us-west-2 with the AWS Region you're using for Amazon SES.
     AWS_REGION = "us-west-2"
 
     # The subject line for the email.
-    SUBJECT = "Checkin:{r}".format(r=result)
+    SUBJECT = "Flight Checkin: {r}".format(r=result)
 
     # set the attachment filename
     ATTACHMENT = attachment
@@ -77,18 +77,17 @@ def sendEmail(to, result, attachment):
     msg_body.attach(htmlpart)
 
     # Define the attachment part and encode it using MIMEApplication.
-    att = MIMEApplication(open(ATTACHMENT, 'rb').read())
-
-    # Add a header to tell the email client to treat this part as an attachment,
-    # and to give the attachment a name.
-    att.add_header('Content-Disposition','attachment',filename=os.path.basename(ATTACHMENT))
+    if ATTACHMENT:
+        att = MIMEApplication(open(ATTACHMENT, 'rb').read())
+        msg.attach(att)
+        # Add a header to tell the email client to treat this part as an attachment,
+        # and to give the attachment a name.
+        att.add_header('Content-Disposition','attachment',filename=os.path.basename(ATTACHMENT))
 
     # Attach the multipart/alternative child container to the multipart/mixed
     # parent container.
     msg.attach(msg_body)
 
-    # Add the attachment to the parent container.
-    msg.attach(att)
     #print(msg)
     try:
         #Provide the contents of the email.
@@ -100,7 +99,7 @@ def sendEmail(to, result, attachment):
             RawMessage={
                 'Data':msg.as_string(),
             },
-            ConfigurationSetName=CONFIGURATION_SET
+        #    ConfigurationSetName=CONFIGURATION_SET
         )
     # Display an error if something goes wrong.	
     except ClientError as e:
