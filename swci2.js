@@ -49,9 +49,10 @@ const retrySubmit = async (page, maxNumberTries) => {
 		try {
 			await page.waitForNavigation();
 			console.log("Navigated to the next page")
-			await page.click(checkInButtonClass).then(()=> {
+			await page.click(checkInButtonClass).then(async ()=> {
 				isSubmitted = true;
 				console.log(new Date().toISOString() + ": clicked and taking screen shot of boarding information");
+				await page.waitFor(3000);
 				page.screenshot({path: `${firstName}_${lastName}_${conf}.png`});
 			});
 		} catch (e) {
