@@ -24,18 +24,6 @@ if (args.length == 5){
 const puppeteer = require('puppeteer');
 const southwestCheckInURL = 'https://www.southwest.com/air/check-in/';
 
-const retrySubmit = async (page, maxNumberTries) => {
-	var retryInterval = setInterval(() => {
-		submitForm();
-		maxNumberTries = maxNumberTries - 1;
-		console.log("maxNumberTries: ", maxNumberTries);
-
-		if (maxNumberTries < 0 || !shouldRetry(page)) {
-			clearInterval(retryInterval)
-		}
-	}, 1000);
-}
-
 (async () => {
 	const browser = await puppeteer.launch({headless: true});
 	var page = await browser.newPage();
@@ -49,7 +37,10 @@ const retrySubmit = async (page, maxNumberTries) => {
 		try {
 			await page.waitForNavigation();
 			console.log("Navigated to the next page")
-			await page.click(checkInButtonClass).then(async ()=> {
+			await page.waitForSelector(checkInButtonClass)
+			console.log("Got selector class" + checkInButtonClass); 
+			await page.focus(checkInButtonClass)
+			page.click(checkInButtonClass).then(async ()=> {
 				isSubmitted = true;
 				console.log(new Date().toISOString() + ": clicked and taking screen shot of boarding information");
 				await page.waitFor(3000);
@@ -75,14 +66,6 @@ const retrySubmit = async (page, maxNumberTries) => {
 	await page.type('#passengerLastName', lastName);
 
 	submitForm(page);
-	
-	for(let i = 0; i < maxNumberTries; i++) {
-		if (!isSubmitted) {
-			setTimeout(() => {
-				submitForm(page);
-			}, 1000);
-		}
-	}
 
 	await page.waitFor(10000);
 	browser.close();
